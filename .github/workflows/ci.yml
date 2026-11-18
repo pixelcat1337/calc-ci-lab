@@ -36,14 +36,14 @@ jobs:
           cache: pip
           cache-dependency-path: requirements-dev.txt
       - run: pip install -r requirements-dev.txt
-      - name: Запустить pytest
-        run: pytest -v --junitxml=report.xml
-      - name: Сохранить отчёт о тестах
+      - name: Запустить pytest с покрытием
+        run: pytest -v --junitxml=report.xml --cov=calc --cov-report=xml:coverage.xml
+      - name: Сохранить отчёт о покрытии
         uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: test-report
-          path: report.xml
+          name: coverage-report
+          path: coverage.xml
 
   build:
     name: Сборка пакета

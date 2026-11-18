@@ -14,16 +14,28 @@ def test_add(a, b, expected):
     assert add(a, b) == pytest.approx(expected)
 
 
-def test_subtract():
-    assert subtract(10, 4) == 6
+@pytest.mark.parametrize(
+    "a, b, expected",
+    [(10, 4, 6), (5, 5, 0), (-2, -3, 1)],
+)
+def test_subtract(a, b, expected):
+    assert subtract(a, b) == pytest.approx(expected)
 
 
-def test_multiply():
-    assert multiply(3, 7) == 21
+@pytest.mark.parametrize(
+    "a, b, expected",
+    [(3, 7, 21), (0, 5, 0), (-2, 4, -8)],
+)
+def test_multiply(a, b, expected):
+    assert multiply(a, b) == pytest.approx(expected)
 
 
-def test_divide():
-    assert divide(9, 3) == 3
+@pytest.mark.parametrize(
+    "a, b, expected",
+    [(9, 3, 3), (5, 2, 2.5), (-10, 2, -5)],
+)
+def test_divide(a, b, expected):
+    assert divide(a, b) == pytest.approx(expected)
 
 
 def test_divide_by_zero_raises():
@@ -52,3 +64,8 @@ def test_cli_add(capsys):
 def test_cli_division_by_zero_returns_error_code(capsys):
     assert main(["div", "1", "0"]) == 1
     assert "Ошибка" in capsys.readouterr().err
+
+
+def test_cli_invalid_operation(capsys):
+    # Проверяем, что при несуществующей операции калькулятор возвращает ошибку (не 0)
+    assert main(["unknown", "2", "3"]) != 0
