@@ -35,6 +35,7 @@ def power(base: float, exponent: int) -> float:
         result *= base
     return result if exponent >= 0 else 1 / result
 
+
 def to_roman(n: int) -> str:
     """Конвертирует целое число от 1 до 3999 в римскую запись."""
     if not isinstance(n, int) or not (1 <= n <= 3999):
