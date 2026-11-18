@@ -34,3 +34,5 @@ def power(base: float, exponent: int) -> float:
     for _ in range(abs(exponent)):
         result *= base
     return result if exponent >= 0 else 1 / result
+
+# Это очень-очень длинный комментарий, который гарантированно превышает лимит в сто символов и должен вызвать ошибку E501 от линтера flake8 при проверке кода.
