@@ -1,0 +1,69 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  lint:
+    name: Проверка кода (flake8)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Получить исходный код
+        uses: actions/checkout@v4
+      - name: Установить Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements-dev.txt
+      - name: Установить зависимости
+        run: pip install -r requirements-dev.txt
+      - name: Запустить flake8
+        run: flake8 src tests
+
+  test:
+    name: Тесты (pytest)
+    runs-on: ubuntu-latest
+needs: lint
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements-dev.txt
+      - run: pip install -r requirements-dev.txt
+      - name: Запустить pytest
+        run: pytest -v --junitxml=report.xml
+      - name: Сохранить отчёт о тестах
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-report
+          path: report.xml
+
+  build:
+    name: Сборка пакета
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Собрать wheel и sdist
+        run: |
+          pip install build
+          python -m build
+      - name: Проверить, что собранный пакет устанавливается и работает
+        run: |
+          pip install dist/*.whl
+          calc add 2 3
+      - name: Сохранить артефакт сборки
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist/
