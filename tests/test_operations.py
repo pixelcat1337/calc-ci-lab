@@ -1,54 +1,50 @@
-"""Арифметические операции учебного калькулятора."""
+import pytest
+
+from calc import add, divide, multiply, power, subtract, to_roman
 
 
-def add(a: float, b: float) -> float:
-    """Возвращает сумму a и b."""
-    return a + b
+def test_add():
+    assert add(2, 3) == 5
+    assert add(-1, 4) == 3
 
 
-def subtract(a: float, b: float) -> float:
-    """Возвращает разность a и b."""
-    return a - b
+def test_subtract():
+    assert subtract(10, 4) == 6
+    assert subtract(3, 5) == -2
 
 
-def multiply(a: float, b: float) -> float:
-    """Возвращает произведение a и b."""
-    return a * b
+def test_multiply():
+    assert multiply(3, 4) == 12
+    assert multiply(-2, 5) == -10
 
 
-def divide(a: float, b: float) -> float:
-    """Возвращает частное a и b.
-
-    Вызывает ZeroDivisionError с понятным сообщением при делении на ноль.
-    """
-    if b == 0:
-        raise ZeroDivisionError("Деление на ноль недопустимо")
-    return a / b
+def test_divide():
+    assert divide(10, 2) == 5
+    with pytest.raises(ZeroDivisionError):
+        divide(5, 0)
 
 
-def power(base: float, exponent: int) -> float:
-    """Возводит base в целую степень exponent без использования оператора **."""
-    if not isinstance(exponent, int):
-        raise TypeError("Показатель степени должен быть целым числом")
-    result = 1.0
-    for _ in range(abs(exponent)):
-        result *= base
-    return result if exponent >= 0 else 1 / result
+def test_power():
+    assert power(2, 3) == 8.0
+    assert power(2, -1) == 0.5
+    with pytest.raises(TypeError):
+        power(2, 1.5)
 
 
-def to_roman(n: int) -> str:
-    """Конвертирует целое число от 1 до 3999 в римскую запись."""
-    if not isinstance(n, int) or not (1 <= n <= 3999):
-        raise ValueError("Число должно быть целым в диапазоне от 1 до 3999")
+def test_to_roman_valid():
+    assert to_roman(1) == "I"
+    assert to_roman(4) == "IV"
+    assert to_roman(9) == "IX"
+    assert to_roman(1994) == "MCMXCIV"
+    assert to_roman(3999) == "MMMCMXCIX"
 
-    val = [1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1]
-    syb = ["M", "CM", "D", "CD", "C", "XC", "L", "XL", "X", "IX", "V", "IV", "I"]
 
-    roman_num = ""
-    i = 0
-    while n > 0:
-        for _ in range(n // val[i]):
-            roman_num += syb[i]
-            n -= val[i]
-        i += 1
-    return roman_num
+def test_to_roman_invalid():
+    with pytest.raises(ValueError):
+        to_roman(0)
+    with pytest.raises(ValueError):
+        to_roman(4000)
+    with pytest.raises(ValueError):
+        to_roman(True)
+    with pytest.raises(ValueError):
+        to_roman("1994")
