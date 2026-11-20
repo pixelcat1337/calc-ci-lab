@@ -30,7 +30,7 @@ python -m build           # сборка: dist/*.whl и dist/*.tar.gz
 pip install dist/*.whl && calc add 2 3
 ```
 
-## Этапы CI
+## Этапы CI 89898
 
 | Этап  | Что делает                                   | GitHub Actions (job) | GitLab CI (job) |
 |-------|----------------------------------------------|----------------------|-----------------|
