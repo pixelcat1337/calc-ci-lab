@@ -38,7 +38,7 @@ def power(base: float, exponent: int) -> float:
 
 def to_roman(n: int) -> str:
     """Конвертирует целое число от 1 до 3999 в римскую запись."""
-    if not isinstance(n, int) or not (1 <= n <= 3999):
+    if isinstance(n, bool) or not isinstance(n, int) or not (1 <= n <= 3999):
         raise ValueError("Число должно быть целым в диапазоне от 1 до 3999")
 
     val = [1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1]
