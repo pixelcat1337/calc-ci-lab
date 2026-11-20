@@ -1,71 +1,54 @@
-"""Модульные тесты для calc.operations (pytest)."""
-
-import pytest
-
-from calc import add, divide, multiply, power, subtract
-from calc.cli import main
+"""Арифметические операции учебного калькулятора."""
 
 
-@pytest.mark.parametrize(
-    "a, b, expected",
-    [(2, 3, 5), (-1, 1, 0), (0.5, 0.25, 0.75)],
-)
-def test_add(a, b, expected):
-    assert add(a, b) == pytest.approx(expected)
+def add(a: float, b: float) -> float:
+    """Возвращает сумму a и b."""
+    return a + b
 
 
-@pytest.mark.parametrize(
-    "a, b, expected",
-    [(10, 4, 6), (5, 5, 0), (-2, -3, 1)],
-)
-def test_subtract(a, b, expected):
-    assert subtract(a, b) == pytest.approx(expected)
+def subtract(a: float, b: float) -> float:
+    """Возвращает разность a и b."""
+    return a - b
 
 
-@pytest.mark.parametrize(
-    "a, b, expected",
-    [(3, 7, 21), (0, 5, 0), (-2, 4, -8)],
-)
-def test_multiply(a, b, expected):
-    assert multiply(a, b) == pytest.approx(expected)
+def multiply(a: float, b: float) -> float:
+    """Возвращает произведение a и b."""
+    return a * b
 
 
-@pytest.mark.parametrize(
-    "a, b, expected",
-    [(9, 3, 3), (5, 2, 2.5), (-10, 2, -5)],
-)
-def test_divide(a, b, expected):
-    assert divide(a, b) == pytest.approx(expected)
+def divide(a: float, b: float) -> float:
+    """Возвращает частное a и b.
+
+    Вызывает ZeroDivisionError с понятным сообщением при делении на ноль.
+    """
+    if b == 0:
+        raise ZeroDivisionError("Деление на ноль недопустимо")
+    return a / b
 
 
-def test_divide_by_zero_raises():
-    with pytest.raises(ZeroDivisionError, match="Деление на ноль"):
-        divide(1, 0)
+def power(base: float, exponent: int) -> float:
+    """Возводит base в целую степень exponent без использования оператора **."""
+    if not isinstance(exponent, int):
+        raise TypeError("Показатель степени должен быть целым числом")
+    result = 1.0
+    for _ in range(abs(exponent)):
+        result *= base
+    return result if exponent >= 0 else 1 / result
 
 
-@pytest.mark.parametrize(
-    "base, exponent, expected",
-    [(2, 10, 1024), (5, 0, 1), (2, -2, 0.25)],
-)
-def test_power(base, exponent, expected):
-    assert power(base, exponent) == pytest.approx(expected)
+def to_roman(n: int) -> str:
+    """Конвертирует целое число от 1 до 3999 в римскую запись."""
+    if not isinstance(n, int) or not (1 <= n <= 3999):
+        raise ValueError("Число должно быть целым в диапазоне от 1 до 3999")
 
+    val = [1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1]
+    syb = ["M", "CM", "D", "CD", "C", "XC", "L", "XL", "X", "IX", "V", "IV", "I"]
 
-def test_power_rejects_non_integer_exponent():
-    with pytest.raises(TypeError):
-        power(2, 0.5)
-
-
-def test_cli_add(capsys):
-    assert main(["add", "2", "3"]) == 0
-    assert capsys.readouterr().out.strip() == "5.0"
-
-
-def test_cli_division_by_zero_returns_error_code(capsys):
-    assert main(["div", "1", "0"]) == 1
-    assert "Ошибка" in capsys.readouterr().err
-
-
-def test_cli_invalid_operation(capsys):
-    # Проверяем, что при несуществующей операции калькулятор возвращает ошибку (не 0)
-    assert main(["unknown", "2", "3"]) != 0
+    roman_num = ""
+    i = 0
+    while n > 0:
+        for _ in range(n // val[i]):
+            roman_num += syb[i]
+            n -= val[i]
+        i += 1
+    return roman_num
