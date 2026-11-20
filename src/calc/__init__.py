@@ -2,5 +2,5 @@
 
 from .operations import add, subtract, multiply, divide, power, to_roman
 
-__all__ = ["add", "subtract", "multiply", "divide", "power"]
+__all__ = ["add", "subtract", "multiply", "divide", "power", "to_roman"]
 __version__ = "0.1.0"
